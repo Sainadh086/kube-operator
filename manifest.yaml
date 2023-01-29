@@ -1,0 +1,16 @@
+apiVersion: sampledb.beta/v1
+kind: MongoDB
+metadata:
+  name: mongo-test
+spec:
+  image: "mongo:latest"
+  storage:
+    class: gp2
+    size: 20GiB
+  secrets:
+    user: ipm
+    password: ipm123
+    db: ipm-db
+  service:
+    type: loadbalancer
+   
