@@ -44,3 +44,78 @@ spec:
           priority: 0
           jsonPath: .status.create_fn.message
           description: As returned from the handler (sometimes).
+
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kops-cluster-operator-global
+  labels:
+    app: kops
+rules:
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      # The cluster operator needs to create and manage cluster role bindings in the case of an install where a user
+      # has specified they want their cluster role bindings generated
+      - clusterrolebindings
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      # The cluster operator requires "get" permissions to view storage class details
+      # This is because only a persistent volume of a supported storage class type can be resized
+      - storageclasses
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      # The cluster operator requires "list" permissions to view all nodes in a cluster
+      # The listing is used to determine the node addresses when NodePort access is configured
+      # These addresses are then exposed in the custom resource states
+      - nodes
+    verbs:
+      - list
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kops-kafka-client
+  labels:
+    app: kops
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      # The Kafka clients (Connect, Mirror Maker, etc.) require "get" permissions to view the node they are on
+      # This information is used to generate a Rack ID (client.rack option) that is used for consuming from the closest
+      # replicas when enabled
+      - nodes
+    verbs:
+      - get
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kops-cluster-operator-leader
+  labels:
+    app: kops
+subjects:
+  - kind: ServiceAccount
+    name: kops-cluster-operator
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: kops-cluster-operator-leader
+  apiGroup: rbac.authorization.k8s.io

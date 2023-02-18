@@ -1,16 +1,17 @@
 apiVersion: sampledb.beta/v1
 kind: MongoDB
 metadata:
-  name: mongo-test
+  name: nginx
+  namespace: default
 spec:
-  image: "mongo:latest"
+  image: "nginx:latest"
   storage:
     class: gp2
     size: 20GiB
   secrets:
-    user: ipm
-    password: ipm123
-    db: ipm-db
+    user: test
+    password: test123
+    db: test-db
   service:
     type: loadbalancer
    
