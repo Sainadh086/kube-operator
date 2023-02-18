@@ -16,7 +16,5 @@ spec:
     spec:
       serviceAccountName: kopfexample-account
       containers:
-      - name: the-only-one
-        image: nolar/kopf-operator
-        command:
-          - "sleep 365d"
+      - name: operator
+        image: "quay.io/sainadh086/operator:latest"
