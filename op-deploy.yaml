@@ -17,4 +17,4 @@ spec:
       serviceAccountName: kopfexample-account
       containers:
       - name: operator
-        image: "quay.io/sainadh086/operator:latest"
+        image: "quay.io/sainadh086/operator:master"

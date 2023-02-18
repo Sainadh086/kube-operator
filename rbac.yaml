@@ -13,14 +13,14 @@ rules:
 
   # Framework: knowing which other operators are running (i.e. peering).
   - apiGroups: [sampledb.beta]
-    resources: [clusterkopfpeerings, mongodbs]
-    verbs: [list, watch, patch, get]
+    resources: [mongodbs]
+    verbs: [list, watch, patch, get, post]
 
   # Framework: runtime observation of namespaces & CRDs (addition/deletion).
   - apiGroups: [apiextensions.k8s.io]
     resources: [customresourcedefinitions]
     verbs: [list, watch]
-  - apiGroups: [""]
+  - apiGroups: ["*"]
     resources: [namespaces]
     verbs: [list, watch]
 
@@ -29,10 +29,10 @@ rules:
     resources: [validatingwebhookconfigurations, mutatingwebhookconfigurations]
     verbs: [create, patch]
 
-  # Application: read-only access for watching cluster-wide.
-  - apiGroups: [sampledb.beta]
-    resources: [monogdbs]
-    verbs: [list, watch]
+  # # Application: read-only access for watching cluster-wide.
+  # - apiGroups: [sampledb.beta]
+  #   resources: [monogdbs]
+  #   verbs: [list, watch]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -43,11 +43,11 @@ rules:
 
   # Framework: knowing which other operators are running (i.e. peering).
   - apiGroups: [sampledb.beta]
-    resources: [kopfpeerings, mongodbs]
+    resources: [mongodbs]
     verbs: [list, watch, patch, get]
 
   # Framework: posting the events about the handlers progress/errors.
-  - apiGroups: [""]
+  - apiGroups: ["*"]
     resources: [events]
     verbs: [create]
 
@@ -61,7 +61,7 @@ rules:
   - apiGroups: [batch, extensions]
     resources: [jobs]
     verbs: [create]
-  - apiGroups: [""]
+  - apiGroups: ["*"]
     resources: [pods, persistentvolumeclaims]
     verbs: [create]
 ---
